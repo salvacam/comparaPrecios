@@ -1,0 +1,219 @@
+@font-face {
+	font-family: 'firefoxos';
+	src: url('../font/FiraSansOT-Regular.otf') format("opentype");
+}
+
+body{  
+    margin: 0;
+    padding: 0;
+    font-family: 'firefoxos';
+	min-width: 320px;  
+}
+
+a{
+    text-decoration: none;
+	color:#333333;
+}
+
+input{
+	height: 1.8rem;
+	font-size:1.5rem;
+}
+
+.hide {
+	display: none !important;
+}
+
+#pagina:after{
+	width: 100%;
+	height:2.2rem;
+	display:block;
+	clear:both;
+}
+
+#encabezamiento,
+.headerMain,
+.headerAdd,
+.headerProduct {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1rem;
+	background-color: #cb6324;
+	width:100%;
+	height:3rem;
+	/*
+	display: block;
+	background: url("img/header.png") repeat-x scroll 0px 0px / auto 100% transparent;
+	font-size:1rem;
+	font-weight: normal;
+	*/
+}
+
+#encabezamiento h1,
+.headerMain h1,
+.headerAdd h1,
+.headerProduct h1 {
+	
+	margin-left:2rem;
+	font-size:1.5rem;
+	text-decoration:none;
+	color: #FFF;
+	/*
+	float:left;
+	padding-bottom:0.5rem;
+	padding:0;
+	margin-bottom:2rem;	
+	font-weight: normal;
+	text-align:left;
+	line-height: 3rem;
+	padding-left:0.5rem;
+	margin:0;
+	*/
+}
+
+.icon {
+	width: 3rem;	
+	padding: 3px;
+	background-color: #9e3322;
+	stroke-width: 0;
+	stroke: currentColor;
+	fill: currentColor;
+	cursor: pointer;
+}
+
+.iconItem {
+	background-color: #FFF;
+}
+
+.header .icon:hover {
+	background-color:#008CAA;
+}
+
+#pie {
+	display: inline;
+	width:100%;
+	background-color:#4D4E53;
+}
+
+.botones {
+	background-color:#4D4E53;
+	float:left;
+	width: 50%;
+	padding-top: 0.5rem;
+}
+
+.botones:hover {
+	background-color:grey;
+}
+.botones img {
+	float:right;
+	padding-right:15%;
+	margin-top:-10px;
+}
+.botones span {
+	margin-left:0.5rem;
+}
+
+#cajadatos,
+.productList {
+	text-align:center;
+}
+
+#cajadatos .empty,
+.productList .empty {
+	/*margin-top: 20px;*/
+	line-height: 100px;
+}
+
+#cajadatos a,
+.productList a {
+    width:100%;
+	line-height: 2rem;
+}
+
+#cajaformulario,
+.productInput {
+	float:left;
+	width:95%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	/*margin-top:5rem;*/
+	margin-left:10px;
+	text-align:left;
+}
+
+#cajadatos div,
+.productInput div {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #999999;
+}
+
+.productItemClass {
+	display: block;
+	line-height: 2rem;
+	cursor: pointer;
+}
+
+#cajadatos div:hover,
+.productInput div:hover,
+.productItemClass:hover
+{
+	background-color:#008CAA;
+}
+
+.dataBox {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #999999;
+}
+
+.dataBox > div {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+
+.dataBox svg {
+	height: 48px;
+}
+
+.priceForm, .addPrice, .clearPrice{
+	margin: 10px;
+}
+
+.addPrice, .clearPrice {
+	display: flex;
+	justify-content: center;
+    align-items: center;
+	height: 40px;
+	background-color: #5f5f5f;
+	padding: 0;
+	cursor: pointer;
+}
+
+.addPrice .icon, .clearPrice .icon {
+	height: 40px;
+	padding: 0;
+	background-color: #5f5f5f;
+}
+
+.price {
+	display: flex;
+	margin: 10px;
+	flex-direction: column;
+	border-bottom: 1px solid #999999;
+}
+
+.price .image {
+    align-self: flex-end;
+    margin-top: -40px;
+    height: 50px;
+}
+
+.price .image svg {
+    height: 30px;
+    background: none;
+}

@@ -187,8 +187,8 @@ var app = {
 		} else if(nameValue !== "") {
 
 		    for (var i in app.allProducts) {
-		        if(app.allProducts[i].Name === nameValue) {
-					alert("Ya existe el producto " + nameValue);
+		        if(app.allProducts[i].Name === nameValue && app.allProducts[i].Mark === markValue ) {
+					alert(`Ya existe el producto ${nameValue} - ${markValue}`);
 		            return;
 		        }
 		    }
@@ -235,6 +235,7 @@ var app = {
 	deleteProduct: function() {
 		if (confirm(`¿Borrar producto ${app.item.Name}?`)){
 			app.allProducts = app.allProducts.filter(el => el.id !== app.item.id);
+			app.resetIdArray(app.allProducts);
 			app.productList.innerHTML = '<p class="empty">Pulsa + para agregar productos</p>';
 			localStorage.setItem(app.nameLocalStorage, JSON.stringify(app.allProducts));
 			app.changeToMain();
@@ -254,7 +255,8 @@ var app = {
 
 			if (confirm(`¿Borrar precio de la tienda ${price.Shop}?`)){
 
-				app.item.ListPrices = app.item.ListPrices.filter(el => el.id != idValue)
+				app.item.ListPrices = app.item.ListPrices.filter(el => el.id != idValue);
+				app.resetIdArray(app.item.ListPrices);
 				app.updateProduct();
 
 				//Mostrar precios
@@ -312,7 +314,8 @@ var app = {
 			//TODO comprobar si existe la tienda
 			
 			if (!app.isEditPrice) {
-				app.item.ListPrices.push({id: app.item.ListPrices.length + 1 ,Shop: shopValue, Price: priceValue});
+				app.item.ListPrices.push({id: app.item.ListPrices.length + 1 ,
+					Shop: shopValue, Price: priceValue});
 			} else {
 				app.item.ListPrices = app.item.ListPrices.filter(x => x.id != app.itemPrice[0].id);
 				
@@ -356,8 +359,10 @@ var app = {
 					<div class="shop">Tienda: ${prices[f].Shop}</div>
 					<div>Precio: ${prices[f].Price}</div>
 					<div class="image">
-						<svg id="" class="icon iconItem icon-pencil editPrice" data-id="${prices[f].id}"><use xlink:href="#icon-pencil" data-id="${prices[f].id}"></use></svg>
-						<svg id="" class="icon icon-bin2 deletePrice" data-id="${prices[f].id}"><use xlink:href="#icon-bin2" data-id="${prices[f].id}"></use></svg>
+						<svg id="" class="icon iconItem icon-pencil editPrice" data-id="${prices[f].id}">
+							<use xlink:href="#icon-pencil" data-id="${prices[f].id}"></use></svg>
+						<svg id="" class="icon icon-bin2 deletePrice" data-id="${prices[f].id}">
+							<use xlink:href="#icon-bin2" data-id="${prices[f].id}"></use></svg>
 					</div>
 				</div>`
 
@@ -386,7 +391,9 @@ var app = {
 			var array =new Array();
 			var contenido="";
 			for(var f=0; f < app.allProducts.length; f++) {
-				app.productList.innerHTML += '<span class="productItemClass" data-id="'+app.allProducts[f].id+'" >'+ app.allProducts[f].Name +'</span>';
+				app.productList.innerHTML += `
+					<span class="productItemClass" data-id="${app.allProducts[f].id}" >
+					${app.allProducts[f].Name} - ${app.allProducts[f].Mark}</span>`;
 			}
 
       		const allProductLink = document.querySelectorAll('.productItemClass');
@@ -495,6 +502,15 @@ var app = {
 		app.productList.classList.remove('hide');
 		app.productInput.classList.add('hide');
 		app.productItem.classList.add('hide');
+	},
+
+	resetIdArray: function(list) {
+		debugger;
+		list.forEach(function (item, index) {
+			console.log(index);
+			console.log(item);
+			item.id = index + 1;
+		});
 	},
 
 	csvJSON: function(csv){

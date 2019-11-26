@@ -293,7 +293,6 @@ var app = {
 			//TODO cambiar si se cancela la edicion
 			*/
 		}
-		debugger;
 	},
 
 	cancelEditPrice: function() {
@@ -345,6 +344,8 @@ var app = {
 			//Borrar formulario
 			app.shopInput.value = "";
 			app.priceInput.value = "";
+			app.clearPriceButton.classList.add('hide');
+			app.priceFormTitle.innerHTML = "Añadir";
 
 		} else {
 			alert("Introduce tienda y precios");

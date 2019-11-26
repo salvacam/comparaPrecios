@@ -308,8 +308,11 @@ var app = {
 		let shopValue = app.shopInput.value;
 
 		let priceValue = app.priceInput.value;
+		if(priceValue !== "") {
+			priceValue = parseFloat(priceValue).toFixed(2);
+		}
 
-		if(shopValue !== "" || priceValue !== "") {
+		if(shopValue !== "" && priceValue !== "") {
 			
 			//TODO comprobar si existe la tienda
 			
@@ -391,9 +394,16 @@ var app = {
 			var array =new Array();
 			var contenido="";
 			for(var f=0; f < app.allProducts.length; f++) {
-				app.productList.innerHTML += `
-					<span class="productItemClass" data-id="${app.allProducts[f].id}" >
-					${app.allProducts[f].Name} - ${app.allProducts[f].Mark}</span>`;
+				if (app.allProducts[f].Mark === undefined || app.allProducts[f].Mark === null || 
+					app.allProducts[f].Mark === "" || app.allProducts[f].Mark === " " ){
+					app.productList.innerHTML += `
+						<span class="productItemClass" data-id="${app.allProducts[f].id}" >
+						${app.allProducts[f].Name}</span>`;
+				} else {
+					app.productList.innerHTML += `
+						<span class="productItemClass" data-id="${app.allProducts[f].id}" >
+						${app.allProducts[f].Name} - ${app.allProducts[f].Mark}</span>`;
+				}
 			}
 
       		const allProductLink = document.querySelectorAll('.productItemClass');

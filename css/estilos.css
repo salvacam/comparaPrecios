@@ -81,6 +81,12 @@ input{
 	cursor: pointer;
 }
 
+.icon-footer {
+	width: 1rem;	
+	padding: 1px;
+	height: 20px;
+}
+
 .iconItem {
 	background-color: #FFF;
 }
@@ -99,7 +105,10 @@ input{
 	background-color:#4D4E53;
 	float:left;
 	width: 50%;
-	padding-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .botones:hover {
@@ -111,7 +120,7 @@ input{
 	margin-top:-10px;
 }
 .botones span {
-	margin-left:0.5rem;
+	margin: 0.5rem;
 }
 
 #cajadatos,

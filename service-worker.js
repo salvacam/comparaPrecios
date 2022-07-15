@@ -1,4 +1,4 @@
-var cacheName = 'comparaPrecios-v0.1.01';
+var cacheName = 'comparaPrecios-v0.1.02';
 
 var filesToCache = [
   './',

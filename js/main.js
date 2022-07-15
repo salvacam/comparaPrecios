@@ -9,6 +9,8 @@ var app = {
 	headerMain: document.getElementById('headerMain'),
 	headerProduct: document.getElementById('headerProduct'),
 
+	footerDiv: document.getElementById('pie'),
+
 	productList: document.getElementById('productList'),
 	productInput: document.getElementById('productInput'),
 	productItem: document.getElementById('productItem'),
@@ -38,120 +40,76 @@ var app = {
 	markItem: document.getElementById('markItem'),
 	amountItem: document.getElementById('amountItem'),
 	weightItem: document.getElementById('weightItem'),
+
+	inputFile: document.getElementById('inputFile'),
 	
 	isEdit: false,
 	isEditPrice: false,
 	item: null,
-    allProducts: [],
-    item: undefined,
-    itemPrice: undefined,
+	allProducts: [],
+	itemPrice: undefined,
 
-	
-	//TODO crear la funcion exportar
 
-/*
-	function exportar(){
-		var cont="";
-		for(var f=0;f<localStorage.length;f++){
-			var nombre=localStorage.key(f);		
-			var valor = JSON.parse(localStorage.getItem(nombre));
-			if (f!=0){
-				cont+="\n";
-			} 
-			for (i = 0; i < 4; i++){
-				var poner=valor[i].replace("/",":%:");
-				cont+=poner+"/";
-			}
-			if (valor.length>4){					
-				for (i = 4; i < valor.length; i++){
-					var poner1=valor[i][0].replace("/",":%:");
-					cont+=poner1+"/";
-					cont+=valor[i][1]+"/";
-				}
-			}
+  csvJSON: function(csv){
+    var lines=csv.split("\r\n");
+
+    var result = [];
+
+    var headersCSV = ["id","Name","Mark","Amount","Weight","ListPrices"];
+
+    for(var i=0;i<lines.length;i++){
+  	  
+  	  var obj = {};
+
+      var currentline=lines[i].split(",");
+
+      if (currentline.length > 1) {
+        for(var j=0;j<headersCSV.length;j++) {
+        	if (j !== 5) {
+          	obj[headersCSV[j]] = currentline[j];
+        	} else {
+        		obj[headersCSV[j]] = [];
+        	}
+        }
+
+	    	var numberPrices = parseInt((currentline.length - 6) / 3);
+
+        for(var j=0; j<numberPrices; j++) {
+  	      var objPrice = {};
+
+  	      objPrice['id'] = currentline[5+(j*3)];
+  	      objPrice['Shop'] = currentline[5+(j*3)+1];
+  	      objPrice['Price'] = currentline[5+(j*3)+2];
+
+  	      obj['ListPrices'].push(objPrice);
+        }
+
+        result.push(obj);
+      }
+    }
+    
+    return JSON.stringify(result);
+  },
+
+
+  importFile: function(e) {  
+		if (confirm("¿Importar lista de productos? \n Eliminara los ya existentes") == true) {
+	    app.inputFile.click();
+	    app.inputFile.addEventListener('change',function(e) {
+	      var input = e.target;
+	      var reader = new FileReader();
+	      reader.onload = function(){
+	        var text = reader.result;
+	        localStorage.setItem(app.nameLocalStorage, app.csvJSON(reader.result));
+      		app.allProducts = JSON.parse(localStorage.getItem(app.nameLocalStorage));
+	        app.mostrar();
+	      };
+	      reader.readAsText(input.files[0]);
+	      app.inputFile.removeEventListener('change', function(){});
+	      app.inputFile.value = "";
+	    });
 		}
-		
-		var sdcard = navigator.getDeviceStorage("sdcard");
-		var file   = new Blob([cont], {type: "text/plain"});
-		var guardar = sdcard.addNamed(file, "ComparaPrecio.txt");
-		
-		guardar.onsuccess = function () {
-			alert("Los productos se han guardado correctamente en la tarjeta sd");
-		}
-
-		guardar.onerror = function () {
-			if (confirm("Ya existe un fichero,¿Quieres sobrescribirlo?")){
-				var borrar = sdcard.delete("ComparaPrecio.txt");
-				var guardar1 = sdcard.addNamed(file, "ComparaPrecio.txt");
-				alert("Los productos se han guardado correctamente en la tarjeta sd");
-			}
-			
-		}
-	}
-*/
-	
-	//TODO crear la funcion importar
-
-/*
-
-
-	function importar(){
-
-	var sdcard = navigator.getDeviceStorage("sdcard");	
-		var productos = sdcard.get("ComparaPrecio.txt");
-		
-		productos.onsuccess = function () {
-			var hacer = true;
-			var file = this.result;
-			if(localStorage.length>0){
-				if(confirm("Si importa borrara los productos existentes")){
-					hacer = true;
-				} else {
-					hacer = false;
-				}
-			}
-			if(hacer){
-				var r = new FileReader();
-				r.readAsText(file);
-				r.onload = function(e) { 
-					var contents = e.target.result;
-					var elem = contents.split('\n');
-
-					localStorage.clear();
-					for (i = 0; i < elem.length; i++){		
-						var array = new Array();	
-						elem[i]= elem[i].substring(0,elem[i].length-1);
-						var elementos = elem[i].split("/");
-						for (j = 0; j < 4; j++){
-							var poner=elementos[j].replace(":%:","/");
-							array.push(poner);
-						}
-							
-						for (var k=4; k < elementos.length; k+=2){
-							var poner1=elementos[k].replace(":%:","/");
-							var mas=[poner1,elementos[k+1]];
-							array.push(mas);			
-						}
-							
-						localStorage.setItem(i,JSON.stringify(array));
-					}		
-						window.location.reload(); 
-				}
-							
-				r.onerror = function () {
-					if(this.target.error.name == "NotReadableError") {
-						alert("El archivo ComparaPrecio.txt no puede leerse");
-					}
-				}
-			}
-			
-		}
-		productos.onerror = function () {
-			alert("No existe el archivo ComparaPrecio.txt");
-		}
-	
-	}
-*/
+  },
 
 	saveProduct: function() {
 		let nameValue = app.nameInput.value;
@@ -419,11 +377,11 @@ var app = {
 
   	changeToProductItem: function(e) {
 		let idValue;	
-  		if (isNaN(e)) {
+		if (isNaN(e)) {
 			idValue = e.target.getAttribute('data-id');
-  		} else {
-			idValue = e;  			
-  		}
+		} else {
+			idValue = e;
+		}
 
     	//TODO obterner el producto con id idValue de app.allProducts 
 		for(var f=0; f < app.allProducts.length; f++) {
@@ -433,7 +391,7 @@ var app = {
 			}
 		}
     	
-    	productItemName.innerHTML = app.item.Name;
+    productItemName.innerHTML = app.item.Name;
 
 		nameItem.innerHTML = app.item.Name;
 		markItem.innerHTML = app.item.Mark;
@@ -452,6 +410,8 @@ var app = {
 		app.headerAdd.classList.add('hide');
 		app.headerProduct.classList.remove('hide');
 
+		app.footerDiv.classList.add('hide');	
+
 		app.productList.classList.add('hide');
 		app.productInput.classList.add('hide');
 		app.productItem.classList.remove('hide');
@@ -462,40 +422,42 @@ var app = {
 		//TODO comprobar si es un producto nuevo o edita uno
 		let idValue;
 		if (e !== null && e !== undefined) {
-    		idValue = e.target.getAttribute('data-id');
-    		app.titleVistProduct.innerHTML = "Edite";
-    	} else {
+  		idValue = e.target.getAttribute('data-id');
+  		app.titleVistProduct.innerHTML = "Edite";
+  	} else {
 			app.titleVistProduct.innerHTML = "Añade";
-    	}
+  	}
 
-    	if (idValue !== undefined) {
-    		app.isEdit = true;
-    		//Volver a la pantalla del producto y no al inicio
-            app.backToMainButton.removeEventListener('click', function(){});
+  	if (idValue !== undefined) {
+  		app.isEdit = true;
+  		//Volver a la pantalla del producto y no al inicio
+      app.backToMainButton.removeEventListener('click', function(){});
 			app.backToMainButton.addEventListener('click', () => {app.changeToProductItem(idValue);});
 
-	    	app.nameInput.value = app.item.Name;
+    	app.nameInput.value = app.item.Name;
 			app.markInput.value = app.item.Mark;
 			app.amountInput.value = app.item.Amount;
 			app.weightInput.value = app.item.Weight;
-    	} else {
-    		app.isEdit = false;
-    		//Si es un producto nuevo vuelve al inicio
-    		app.backToMainButton.removeEventListener('click', function(){});
+  	} else {
+  		app.isEdit = false;
+  		//Si es un producto nuevo vuelve al inicio
+  		app.backToMainButton.removeEventListener('click', function(){});
 			app.backToMainButton.addEventListener('click', (event) => {			
 				app.changeToMain();
 			});
 
-	    	app.nameInput.value = "";
+    	app.nameInput.value = "";
 			app.markInput.value = "";
 			app.amountInput.value = "";
 			app.weightInput.value = "";	
-    	}
+  	}
 
 		//TODO implementar
 		app.headerMain.classList.add('hide');
 		app.headerAdd.classList.remove('hide');
 		app.headerProduct.classList.add('hide');
+
+		app.footerDiv.classList.add('hide');	
 
 		app.productList.classList.add('hide');
 		app.productInput.classList.remove('hide');
@@ -509,6 +471,8 @@ var app = {
 		app.headerMain.classList.remove('hide');
 		app.headerAdd.classList.add('hide');	
 		app.headerProduct.classList.add('hide');	
+
+		app.footerDiv.classList.remove('hide');	
 
 		app.productList.classList.remove('hide');
 		app.productInput.classList.add('hide');
@@ -524,31 +488,6 @@ var app = {
 		});
 	},
 
-	csvJSON: function(csv){
-		var lines=csv.split("\r\n");
-
-		var result = [];
-
-		var headersCSV = ["Order","Number","Descripcion"]; // TODO comprobar el tipo de dato que viene en cada campo
-
-		for(var i=0;i<lines.length;i++){
-
-		  var obj = {};
-		  var currentline=lines[i].split(",");
-
-		  if (currentline.length > 1) {
-		    for(var j=0;j<headersCSV.length;j++){
-		      obj[headersCSV[j]] = currentline[j];
-		    }
-
-		    result.push(obj);
-		  }
-
-		}
-
-		return JSON.stringify(result);
-	},
-
 	DownloadJSON2CSV: function(objArray) {
 	  var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
@@ -558,7 +497,15 @@ var app = {
 	    var line = '';
 
 	    for (var index in array[i]) {
-	      line += array[i][index] + ',';
+	    	if (index == 'ListPrices') {
+	    		for (var indexListPrices in array[i][index]) {
+	      		line += array[i][index][indexListPrices]['id'] + ',';
+	      		line += array[i][index][indexListPrices]['Shop'] + ',';
+	      		line += array[i][index][indexListPrices]['Price'] + ',';
+	    		}		
+	    	} else {	    		
+	      	line += array[i][index] + ',';
+	    	}
 	    }
 
 	    line.slice(0, line.Length - 1);
@@ -592,8 +539,8 @@ var app = {
 	init: function() { 
 
 		if (localStorage.getItem(app.nameLocalStorage) !== null) {
-      		app.allProducts = JSON.parse(localStorage.getItem(app.nameLocalStorage));
-      	}
+  		app.allProducts = JSON.parse(localStorage.getItem(app.nameLocalStorage));
+  	}
 
 		app.addButton.addEventListener('click', (event) => {
 			app.changeToAdd();
@@ -623,25 +570,23 @@ var app = {
 			app.cancelEditPrice();
 		});
 		
+		var imp=document.getElementById('imp');			
+		imp.addEventListener('click', function(){app.importFile()}, false);
 
-		/*
-				//TODO llamar a la funciones importar y exportar
-			imp.addEventListener('click', function(){importar()}, false);
+		var exp=document.getElementById('exp');
+		exp.addEventListener('click', function(){app.exportBookmark()}, true);
 		
-			var exp=document.getElementById('exp');
-			exp.addEventListener('click', function(){exportar()}, true);
-		*/
 
 		app.mostrar();
 
 		if ('serviceWorker' in navigator) {
-      		navigator.serviceWorker
-        		.register('service-worker.js')
-        		.then(function() {
-          		//console.log('Service Worker Registered');
-        	});
+			navigator.serviceWorker
+			.register('service-worker.js')
+			.then(function() {
+				//console.log('Service Worker Registered');
+			});
 		}
 
-  	}
+  }
 };
 
